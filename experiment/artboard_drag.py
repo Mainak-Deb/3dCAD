@@ -39,6 +39,7 @@ def handle_events():
     global is_dragging,start_pos
     
     for event in pygame.event.get():
+        
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
@@ -56,7 +57,7 @@ def handle_events():
             end_pos = screen_to_array(pygame.mouse.get_pos())
             draw_line(start_pos, end_pos)
             start_pos = end_pos
-
+    print(is_dragging)
 # create a function to draw a line between two points
 # create a function to draw a line between two points
 def draw_line(start_pos, end_pos):

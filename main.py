@@ -4,7 +4,8 @@ from pygame.locals import *
 import math
 from button import button
 import numpy as np
-from artboard import artboard
+# from artboard import artboard
+from drawingboard import drawingboard
 
 
 pygame.init()
@@ -27,7 +28,7 @@ bottom=button(screen,550,50,100,50,(255,255,255),pygame.font.SysFont("Arial", 30
 buttonArr=[top,front,left,right,back,bottom]
 
 
-artboard=artboard(screen,50,120,600,(255,255,255))
+bitpix=drawingboard(screen,50,120,600)
 
 running=True;
 while running:
@@ -36,6 +37,13 @@ while running:
         if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            bitpix.update("MOUSEBUTTONDOWN")
+        elif event.type == pygame.MOUSEBUTTONUP:
+            bitpix.update("MOUSEBUTTONUP")
+        elif event.type == pygame.MOUSEMOTION:
+            bitpix.update("MOUSEMOTION")
+            
 
     for i in range(len(buttonArr)):
         buttonArr[i].draw()
@@ -44,6 +52,6 @@ while running:
                 for j in range(len(buttonArr)):
                     buttonArr[j].state=False
                 buttonArr[i].state=True
-    artboard.update(artArr)
+    bitpix.update()
     pygame.display.update()
                     
