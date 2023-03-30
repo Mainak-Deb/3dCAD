@@ -1,5 +1,6 @@
 import pygame
 import numpy as np
+import math
 
 # initialize pygame
 pygame.init()
@@ -21,7 +22,7 @@ background_color = (255, 255, 255)
 line_color = (0, 0, 255)
 
 # set the line width
-line_width = 1
+line_width = 4
 
 # create a bit array to represent the pixels
 pixel_array = np.zeros((window_size[1] // pixel_size, window_size[0] // pixel_size), dtype=bool)
@@ -57,13 +58,12 @@ def handle_events():
             end_pos = screen_to_array(pygame.mouse.get_pos())
             draw_line(start_pos, end_pos)
             start_pos = end_pos
-    print(is_dragging)
 # create a function to draw a line between two points
 # create a function to draw a line between two points
-def draw_line(start_pos, end_pos):
-    # use Bresenham's line algorithm to find the pixels to draw
-    if(start_pos==None):
-        return
+
+def bresenham_line_algo(start_pos, end_pos):
+    global pixel_array
+    if(start_pos==None):return
     x0, y0 = start_pos
     x1, y1 = end_pos
     dx = abs(x1 - x0)
@@ -85,6 +85,38 @@ def draw_line(start_pos, end_pos):
         if e2 < dx:
             err += dx
             y0 += sy
+
+def angle_between_points(point1, point2):
+    x1, y1 = point1
+    x2, y2 = point2
+    angle = math.atan2(y2-y1, x2-x1)
+    angle=-1* math.degrees(angle)
+    if(angle < 0):return 360+angle
+    else:return angle
+    
+    
+    
+def draw_line(start_pos, end_pos):
+    global line_width
+    bresenham_line_algo(start_pos, end_pos)
+    angle=angle_between_points(start_pos,end_pos)
+    print(angle)
+    if((135<angle<225) or (45>angle) or (angle>270)):
+        print("horizontal")
+        for i in range(line_width):
+            modified_start_pos = (start_pos[0],start_pos[1]-i)
+            modified_end_pos=(end_pos[0],end_pos[1]-i)
+            bresenham_line_algo(modified_start_pos, modified_end_pos)   
+    else:
+        print("vertical")
+        for i in range(line_width):
+            modified_start_pos = (start_pos[0]-i,start_pos[1])
+            modified_end_pos=(end_pos[0]-i,end_pos[1])
+            bresenham_line_algo(modified_start_pos, modified_end_pos) 
+        
+    
+    
+    
 
 # create a function to draw the pixels on the screen
 def draw_pixels():
