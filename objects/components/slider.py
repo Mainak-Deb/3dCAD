@@ -1,34 +1,8 @@
-import pygame
+import pygame,sys
 
-def display_text(surface, text, font, color, position):
-    text_obj = font.render(text, True, color)
-    text_rect = text_obj.get_rect()
-    text_rect.center=position
-    surface.blit(text_obj, text_rect)
-       
-def modify_color(color,value):
-        return (min(int(color[0]*value/100),255),min(int(color[1]*value/100),255),min(int(color[2]*value/100),255))
-
-def hoverable_circle(window_surface, circle_color, circle_position, circle_radius):
-        mouse_pos = pygame.mouse.get_pos()
-        if ((mouse_pos[0] - circle_position[0]) ** 2 + (mouse_pos[1] - circle_position[1]) ** 2) <= circle_radius ** 2:
-            color = modify_color(circle_color,85) 
-        else:
-           color =circle_color
-        pygame.draw.circle(window_surface, color, circle_position, circle_radius)
-        
-def rounded_rect(screen,color,rect):
-    rect_x,rect_y,rect_width,rect_height = rect
-    corner_radius = rect_height//2
-    pygame.draw.rect(screen, color, (rect_x + corner_radius, rect_y, rect_width - 2*corner_radius, rect_height))
-    pygame.draw.rect(screen, color, (rect_x, rect_y + corner_radius, rect_width, rect_height - 2*corner_radius))
-
-    # Draw circles to create rounded edges
-    pygame.draw.circle(screen, color, (rect_x + corner_radius, rect_y + corner_radius), corner_radius)
-    pygame.draw.circle(screen, color, (rect_x + rect_width - corner_radius, rect_y + corner_radius), corner_radius)
-    pygame.draw.circle(screen, color, (rect_x + corner_radius, rect_y + rect_height - corner_radius), corner_radius)
-    pygame.draw.circle(screen, color, (rect_x + rect_width - corner_radius, rect_y + rect_height - corner_radius), corner_radius)
-
+sys.path.insert(0, '..')
+from operations import *
+from shapes import * 
 
 class Slider:
     def __init__(self, screen, x, y, width, height, color=(255, 92, 206), min_value=0, max_value=100, default_value=50):
@@ -96,43 +70,3 @@ class Slider:
         if(event!=None):self.handle_event(event)
         self.draw()
         
-
-if __name__ == '__main__':
-    # Initialize Pygame
-    pygame.init()
-
-    # Define colors
-    BLACK = (0, 0, 0)
-    WHITE = (255, 255, 255)
-
-    # Set the dimensions of the screen and the font
-    SCREEN_WIDTH = 640
-    SCREEN_HEIGHT = 480
-    FONT_SIZE = 32
-
-    # Create the Pygame window and set the font
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    font = pygame.font.SysFont(None, FONT_SIZE)
-
-    slider = Slider(screen,100, 100, 400, 10,(255,0,0))
-    slider2=Slider(screen,100,400,400, 10,(255,255,0))
-
-    # Game loop
-    running = True
-    while running:
-        screen.fill((0,0,0))
-        # Handle events
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-                
-            slider.update(event)
-            slider2.update(event)
-
-        slider.update()
-        slider2.update()
-        # Update the Pygame display
-        pygame.display.update()
-
-    # Quit Pygame
-    pygame.quit()

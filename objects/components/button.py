@@ -1,5 +1,6 @@
 import pygame
-from operations import *
+from ..operations import *
+from ..shapes import *
 
 class button:
     def __init__(self,surface, text, position, size, color=(150,150,150),text_color=(0,0,0),corner_radius=10,border_width=1):
