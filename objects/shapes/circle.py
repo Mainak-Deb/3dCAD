@@ -1,5 +1,7 @@
 import pygame
-from operations import *
+import sys
+sys.path.append('./')
+from objects.operations import *
 
 
 def hoverable_circle(window_surface, circle_color, circle_position, circle_radius):

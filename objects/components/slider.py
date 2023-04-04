@@ -1,10 +1,10 @@
-import pygame,sys
+import pygame
+import sys
+sys.path.append('./')
+from objects.operations import *
+from objects.shapes import *
 
-sys.path.insert(0, '..')
-from operations import *
-from shapes import * 
-
-class Slider:
+class slider:
     def __init__(self, screen, x, y, width, height, color=(255, 92, 206), min_value=0, max_value=100, default_value=50):
         self.screen = screen
         self.x = x

@@ -1,30 +1,34 @@
 import pygame
-import sys
+from pygame.locals import *
 
-#custom buttons
+import sys
+sys.path.append('./')
+
 import objects
 
-# create a Pygame window and manager
+
 pygame.init()
-window_size = (640, 480)
-window = pygame.display.set_mode(window_size)
-
-# create a button and add it to the manager
-
+screenlengthx=800
+screenlengthy=600
+screen=pygame.display.set_mode((screenlengthx,screenlengthy))
 
 
+button=objects.components.button(screen,"Touch me",(screenlengthx//2-100,screenlengthy//2),(100,50),(232, 160, 191))
+iButton=objects.components.icon_button(screen,"images/search.png",(screenlengthx//2-250,screenlengthy//2),(100,50),(221, 255, 187))
+sButton=objects.components.state_button(screen,"Click me",(screenlengthx//2+100,screenlengthy//2),(100,50),(178, 164, 255))
 
-# main game loop
-while True:
-    # handle Pygame events
+    
+running=True
+while running:
+    screen.fill((255,255,255))
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+        if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+        objects.components.button.update(event)
         
+    objects.components.button.draw()
+    
 
-    # update the GUI manager
-
-    # draw the GUI elements and update the Pygame display
-    window.fill((255, 255, 255))
     pygame.display.update()
+                    

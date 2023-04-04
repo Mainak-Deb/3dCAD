@@ -1,5 +1,8 @@
 import pygame
-from operations import *
+import pygame
+import sys
+sys.path.append('./')
+from objects.operations import *
 
 
 def rounded_rect(screen,rect,color=(255,255,255)):
