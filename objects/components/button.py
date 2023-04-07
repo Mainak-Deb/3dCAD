@@ -3,10 +3,9 @@ import sys
 sys.path.append('./')
 from objects.operations import *
 from objects.shapes import *
+from objects.components.updater import updater
 
-class button:
-    __instances=[]
-    
+class button(updater):    
     def __init__(self,surface, text, position, size, color=(150,150,150),text_color=(0,0,0),corner_radius=10,border_width=1):
         self.surface = surface
         self.text = text
@@ -23,7 +22,7 @@ class button:
         self.text_color = calculate_text_color(color)
         self.text_surface = self.font.render(self.text, True, self.text_color)
         self.state=False
-        button.__instances.append(self)
+        super().__init__()
         
     def update_font_color(self,color):
         self.text_color = calculate_text_color(color)
@@ -47,17 +46,11 @@ class button:
             return True
         return False
     
-    @classmethod
-    def update(cls,event):
-        button_array=cls.__instances
-        for i in button_array:
-            i.handle_event(event)
+    def update(self,event):
+        self.handle_event(event)
     
-    @classmethod
-    def draw(cls):
-        button_array=cls.__instances
-        for i in button_array:
-            i.draw_button()
+    def draw(self):
+        self.draw_button()
     
         
 

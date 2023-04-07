@@ -3,12 +3,14 @@ import sys
 sys.path.append('./')
 from objects.operations import *
 from objects.shapes import *
+from objects.components.updater import updater
 
-class slider:
-    def __init__(self, screen, x, y, width, height, color=(255, 92, 206), min_value=0, max_value=100, default_value=50):
+
+class slider(updater):
+    def __init__(self, screen, pos, width, height, color=(255, 92, 206), min_value=0, max_value=100, default_value=50):
         self.screen = screen
-        self.x = x
-        self.y = y
+        self.x = pos[0]
+        self.y = pos[1]
         self.width = width
         self.height = height
         self.min_value = min_value
@@ -25,8 +27,7 @@ class slider:
         self.knob_y = self.y
         self.dragging = False
         self.font = pygame.font.Font(None, 20)
-
-    def draw(self):
+        super().__init__()
         # Draw the slider background
         self.value = int(self.position_to_value(self.knob_x))
         #background of slider
@@ -55,7 +56,6 @@ class slider:
             self.knob_x = max(self.x, min(event.pos[0] - self.knob_width , self.x + self.width))
             self.value = self.position_to_value(self.knob_x + self.knob_width // 2)
 
-
     def position_to_value(self, position):
         # Convert the knob position to a value in the range
         position_normalized = (position - self.x) / self.width
@@ -68,5 +68,21 @@ class slider:
 
     def update(self,event=None):
         if(event!=None):self.handle_event(event)
-        self.draw()
+        
+    def draw(self):
+        # Draw the slider background
+        self.value = int(self.position_to_value(self.knob_x))
+        #background of slider
+        rounded_rect(self.screen, self.border_color, (self.x-self.border_width, self.y-self.border_width, self.width+(2*self.border_width)+70, self.height+(2*self.border_width)))
+        #sliding bar
+        rounded_rect(self.screen, (200,200,200), (self.x, self.y, self.width, self.height))
+        #slide filling color
+        rounded_rect(self.screen, self.color, (self.x, self.y, self.knob_x-self.x+self.knob_width, self.height))
+        # Draw the knob
+        hoverable_circle(self.screen, self.knob_color, (self.knob_x+self.knob_height//2, self.knob_y+self.knob_height//2), self.knob_height)
+        #text updating pill
+        rounded_rect(self.screen,  self.knob_color, (self.x+self.width+20, self.knob_y-self.height//2, 50, self.knob_height*2))
+        
+        display_text(self.screen,str(self.value),self.font,(255,255,255),(self.x+self.width+35, self.knob_y-self.height//2+10))
+
         

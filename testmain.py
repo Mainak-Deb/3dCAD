@@ -17,6 +17,8 @@ button=objects.components.button(screen,"Touch me",(screenlengthx//2-100,screenl
 iButton=objects.components.icon_button(screen,"images/search.png",(screenlengthx//2-250,screenlengthy//2),(100,50),(221, 255, 187))
 sButton=objects.components.state_button(screen,"Click me",(screenlengthx//2+100,screenlengthy//2),(100,50),(178, 164, 255))
 
+board=objects.components.drawingboard(screen,(10,10),400,(255,0,255))
+slider=objects.components.slider(screen,(50,50),200,10)
     
 running=True
 while running:
@@ -25,9 +27,9 @@ while running:
         if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-        objects.components.button.update(event)
+        objects.components.updater.update(event)
         
-    objects.components.button.draw()
+    objects.components.updater.draw()
     
 
     pygame.display.update()

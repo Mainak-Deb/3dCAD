@@ -1,20 +1,31 @@
 import pygame
 from pygame.locals import *
+import sys
 import numpy as np
 import math
+from objects.components.updater import updater
 
-class drawingBoard:
+
+class drawingboard(updater):
     def __init__(self, screen, position, size=400,color=(0,0,255),axis_density=100):
         self.screen = screen
         self.positionX=position[0]
         self.positionY=position[1]
         self.size=size
-        self.pixel_array = np.zeros((size, size), dtype=bool)
+        self.axis_density=axis_density
+        self.pixel_array = np.zeros((axis_density,axis_density), dtype=bool)
         self.pixel_size = size//axis_density
         self.is_dragging = False
         self.start_pos = None
         self.line_width = 1
-        self.line_color = (0,0, 255)
+        self.line_color = color
+        self.border_width = 4
+        super().__init__()
+        
+    def maintain(self,a):
+        if(a<0):return 0;
+        elif(a>=self.axis_density):return self.axis_density-1
+        else:return a
         
     
     def screen_to_array(self, pos):
@@ -31,7 +42,7 @@ class drawingBoard:
         err = dx - dy
         while True:
             # set the pixel to True
-            self.pixel_array[y0, x0] = True
+            self.pixel_array[self.maintain(y0),self.maintain(x0)] = True
             # check if we've reached the end of the line
             if x0 == x1 and y0 == y1:
                 break
@@ -65,17 +76,8 @@ class drawingBoard:
                 modified_start_pos = (start_pos[0]-i,start_pos[1])
                 modified_end_pos=(end_pos[0]-i,end_pos[1])
                 self.bresenham_line_algo(modified_start_pos, modified_end_pos)
-    
-    def draw(self):
-        pygame.draw.rect(self.screen, (255,255,255),(self.positionX,self.positionY,self.size,self.size))
-        for i in range(self.pixel_array.shape[0]):
-            for j in range(self.pixel_array.shape[1]):
-                if self. pixel_array[i, j]:
-                    rect = pygame.Rect(self.positionX+j * self.pixel_size,self.positionY+ i * self.pixel_size, self.pixel_size, self.pixel_size)
-                    pygame.draw.rect(self.screen, self.line_color, rect)
 
-
-    def handle_events(self,event):
+    def handle_event(self,event):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
@@ -92,15 +94,29 @@ class drawingBoard:
                 end_pos = self.screen_to_array(pygame.mouse.get_pos())
                 self.draw_line(self.start_pos, end_pos)
                 self.start_pos = end_pos
+      
+           
+    def update(self,event):
+        self.handle_event(event)
+    
+    def draw(self):
+        pygame.draw.rect(self.screen, (255,255,255),(self.positionX,self.positionY,self.size,self.size))
+        pygame.draw.rect(self.screen, (0,0,0),(self.positionX-self.border_width,self.positionY-self.border_width,self.size+2*self.border_width,self.size+2*self.border_width),self.border_width)
+        for i in range(self.pixel_array.shape[0]):
+            for j in range(self.pixel_array.shape[1]):
+                if self. pixel_array[i, j]:
+                    rect = pygame.Rect(self.positionX+j * self.pixel_size,self.positionY+ i * self.pixel_size, self.pixel_size, self.pixel_size)
+                    pygame.draw.rect(self.screen, self.line_color, rect)
+
         
 if __name__ =="__main__":
     pygame.init()
-    screenlengthx=1400
+    screenlengthx=600
     screenlengthy=600
     screen=pygame.display.set_mode((screenlengthx,screenlengthy))
 
 
-    board=drawingBoard(screen,(50,50))
+    board=drawingboard(screen,(50,50))
         
     running=True
     while running:
@@ -109,7 +125,7 @@ if __name__ =="__main__":
             if event.type == QUIT:
                     pygame.quit()
                     sys.exit()
-            board.handle_events(event)
+            board.handle_event(event)
             
         board.draw()
         
