@@ -6,7 +6,7 @@ from objects.shapes import *
 from objects.components.updater import updater
 
 class button(updater):    
-    def __init__(self,surface, text, position, size, color=(150,150,150),text_color=(0,0,0),corner_radius=10,border_width=1):
+    def __init__(self,surface, text, position, size, color=(150,150,150),instance=True,text_color=(0,0,0),corner_radius=10,border_width=1):
         self.surface = surface
         self.text = text
         self.font = pygame.font.Font(None, int(size[1]*0.5))
@@ -22,7 +22,7 @@ class button(updater):
         self.text_color = calculate_text_color(color)
         self.text_surface = self.font.render(self.text, True, self.text_color)
         self.state=False
-        super().__init__()
+        if(instance):super().__init__()
         
     def update_font_color(self,color):
         self.text_color = calculate_text_color(color)
@@ -55,8 +55,8 @@ class button(updater):
         
 
 class icon_button(button):
-    def __init__(self,surface:any,iconpath:str, position:tuple, size:tuple, color:tuple=(150,150,150),text_color:tuple=(0,0,0),corner_radius:int=10,border_width:int=1):
-        super().__init__(surface,None, position, size, color,text_color, corner_radius,border_width)
+    def __init__(self,surface:any,iconpath:str, position:tuple, size:tuple, color:tuple=(150,150,150),instance=True,text_color:tuple=(0,0,0),corner_radius:int=10,border_width:int=1):
+        super().__init__(surface,None, position, size, color,instance,text_color, corner_radius,border_width)
         self.icon= pygame.image.load(iconpath).convert_alpha()
         
     def draw_button(self):
@@ -67,8 +67,8 @@ class icon_button(button):
         self.surface.blit(self.icon, self.icon.get_rect(center = self.rect.center))
     
 class state_button(button):
-    def __init__(self,surface:any,text:str, position:tuple, size:tuple, color:tuple=(150,150,150),text_color:tuple=(0,0,0),corner_radius:int=10,border_width:int=1):
-        super().__init__(surface,text, position, size, color,text_color, corner_radius,border_width)
+    def __init__(self,surface:any,text:str, position:tuple, size:tuple, color:tuple=(150,150,150),instance=True,text_color:tuple=(0,0,0),corner_radius:int=10,border_width:int=1):
+        super().__init__(surface,text, position, size, color,instance,text_color, corner_radius,border_width)
         self.state_color=modify_color(color,60)
         
         
