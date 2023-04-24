@@ -7,7 +7,7 @@ from objects.components.updater import updater
 
 
 class drawingboard(updater):
-    def __init__(self, screen, position, size=400,color=(0,0,255),axis_density=100):
+    def __init__(self, screen, position, size=400,color=(0,0,255),axis_density=100,border_width=1):
         self.screen = screen
         self.positionX=position[0]
         self.positionY=position[1]
@@ -19,7 +19,7 @@ class drawingboard(updater):
         self.start_pos = None
         self.line_width = 1
         self.line_color = color
-        self.border_width = 4
+        self.border_width = border_width
         super().__init__()
         
     def maintain(self,a):
@@ -29,8 +29,9 @@ class drawingboard(updater):
         
     
     def screen_to_array(self, pos):
-        return (pos[0]-self.positionX) // self.pixel_size,( pos[1]-self.positionY) // self.pixel_size
-
+        if((pos[0]>self.positionX and pos[0]<self.positionX+self.size) and (pos[1]>self.positionY and pos[1]<self.positionY+self.size)):
+            return (pos[0]-self.positionX) // self.pixel_size,( pos[1]-self.positionY) // self.pixel_size
+        else:return None
     def bresenham_line_algo(self, start_pos, end_pos):
         if(start_pos==None):return
         x0, y0 = start_pos
@@ -92,6 +93,7 @@ class drawingboard(updater):
             elif event.type == pygame.MOUSEMOTION and self.is_dragging:
                 # draw the line as the mouse is dragged
                 end_pos = self.screen_to_array(pygame.mouse.get_pos())
+                if(end_pos==None or self.start_pos==None):return
                 self.draw_line(self.start_pos, end_pos)
                 self.start_pos = end_pos
       

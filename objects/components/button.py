@@ -32,8 +32,8 @@ class button(updater):
         # Draw the button on the given surface
         color = self.hover_color if self.hovered else self.color
         self.update_font_color(color)
-        pygame.draw.rect(self.surface, color, self.rect, border_radius=self.corner_radius)
         pygame.draw.rect(self.surface, self.border_color, self.rect, border_radius=self.corner_radius,width=self.border_width)
+        pygame.draw.rect(self.surface, color, self.rect, border_radius=self.corner_radius)
         self.surface.blit(self.text_surface, (self.position[0] + self.size[0] // 2 - self.text_surface.get_width() // 2, self.position[1] + self.size[1] // 2 - self.text_surface.get_height() // 2))
         
     def handle_event(self, event):
@@ -47,7 +47,7 @@ class button(updater):
         return False
     
     def update(self,event):
-        self.handle_event(event)
+        return self.handle_event(event)
     
     def draw(self):
         self.draw_button()

@@ -8,7 +8,7 @@ import pages
 
 pygame.init()
 screenlengthx=800
-screenlengthy=600
+screenlengthy=730
 screen=pygame.display.set_mode((screenlengthx,screenlengthy))
 
 
