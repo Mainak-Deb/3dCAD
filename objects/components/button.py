@@ -69,7 +69,7 @@ class icon_button(button):
 class state_button(button):
     def __init__(self,surface:any,text:str, position:tuple, size:tuple, color:tuple=(150,150,150),instance=True,text_color:tuple=(0,0,0),corner_radius:int=10,border_width:int=1):
         super().__init__(surface,text, position, size, color,instance,text_color, corner_radius,border_width)
-        self.state_color=modify_color(color,60)
+        self.state_color=modify_color(color,80)
         
         
     def draw_button(self):
@@ -77,6 +77,6 @@ class state_button(button):
         self.update_font_color(color)
         if(self.hovered):color=modify_color(color,80)
         pygame.draw.rect(self.surface, color, self.rect, border_radius=self.corner_radius)
-        pygame.draw.rect(self.surface, (0,0,0), self.rect, border_radius=self.corner_radius,width=self.border_width)
+        #pygame.draw.rect(self.surface, (0,0,0), self.rect, border_radius=self.corner_radius,width=self.border_width)
         self.surface.blit(self.text_surface, (self.position[0] + self.size[0] // 2 - self.text_surface.get_width() // 2, self.position[1] + self.size[1] // 2 - self.text_surface.get_height() // 2))
    

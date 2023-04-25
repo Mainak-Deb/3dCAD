@@ -6,15 +6,14 @@ from objects.shapes import *
 from objects.components.updater import updater
 from objects.components.button import button,state_button,icon_button
 
-class textbox(updater):
-    def __init__(self,screen,rect:tuple,color=(255,255,255),rotation=0,text_size=20,text_color=(0,0,0),instance=False):
+class textbox():
+    def __init__(self,screen,rect:tuple,color=(255,255,255),rotation=0,text_size=20,text_color=(0,0,0)):
         self.screen = screen
         self.rect = rect
         self.color = color
         self.font=pygame.font.Font(None, text_size)   
         self.rotation = rotation
         self.text_color = text_color
-        if(instance): super().__init__()
         
     def update(self,event):
        ...

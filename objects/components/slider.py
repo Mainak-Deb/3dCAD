@@ -7,7 +7,7 @@ from objects.components.updater import updater
 
 
 class slider(updater):
-    def __init__(self, screen, pos, width, height, color=(255, 92, 206), min_value=0, max_value=100, default_value=50):
+    def __init__(self, screen, pos, width, height, color=(255, 92, 206), min_value=0, max_value=100, default_value=50,instance=False):
         self.screen = screen
         self.x = pos[0]
         self.y = pos[1]
@@ -27,7 +27,7 @@ class slider(updater):
         self.knob_y = self.y
         self.dragging = False
         self.font = pygame.font.Font(None, 20)
-        super().__init__()
+        if(instance):super().__init__()
         # Draw the slider background
         self.value = int(self.position_to_value(self.knob_x))
         #background of slider
@@ -48,6 +48,10 @@ class slider(updater):
             # Check if the mouse is clicking the knob
             if self.knob_x <= event.pos[0] <= self.knob_x + self.knob_width and self.knob_y <= event.pos[1] <= self.knob_y + self.knob_height:
                 self.dragging = True
+            else:
+                if((self.x <event.pos[0] < self.x+self.width) and (self.y<event.pos[1]<self.y+self.height ) ):
+                    self.knob_x = event.pos[0]
+                
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             # Stop dragging when the mouse is released
             self.dragging = False
@@ -68,6 +72,9 @@ class slider(updater):
 
     def update(self,event=None):
         if(event!=None):self.handle_event(event)
+        
+    def get_value(self):
+        return int(self.position_to_value(self.knob_x))
         
     def draw(self):
         # Draw the slider background

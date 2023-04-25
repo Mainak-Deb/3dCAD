@@ -22,6 +22,9 @@ class drawingboard(updater):
         self.border_width = border_width
         super().__init__()
         
+    def set_width(self,width):
+        self.line_width=width
+        
     def maintain(self,a):
         if(a<0):return 0;
         elif(a>=self.axis_density):return self.axis_density-1
@@ -103,7 +106,7 @@ class drawingboard(updater):
     
     def draw(self):
         pygame.draw.rect(self.screen, (255,255,255),(self.positionX,self.positionY,self.size,self.size))
-        pygame.draw.rect(self.screen, (0,0,0),(self.positionX-self.border_width,self.positionY-self.border_width,self.size+2*self.border_width,self.size+2*self.border_width),self.border_width)
+        #pygame.draw.rect(self.screen, (0,0,0),(self.positionX-self.border_width,self.positionY-self.border_width,self.size+2*self.border_width,self.size+2*self.border_width),self.border_width)
         for i in range(self.pixel_array.shape[0]):
             for j in range(self.pixel_array.shape[1]):
                 if self. pixel_array[i, j]:

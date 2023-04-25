@@ -21,12 +21,15 @@ class sidebar(updater):
         self.button_spacing=0
         self.state="Top"
         
-        self.topButton=state_button(screen,"Top",(pos[0],pos[1]),(self.width,self.button_height),(200, 255, 212),instance=False,corner_radius=0,border_width=1)
-        self.bottomButton=state_button(screen,"Bottom",(pos[0],pos[1]+self.button_height+self.button_spacing),(self.width,self.button_height),(253, 253, 189),instance=False,corner_radius=0,border_width=1)
-        self.frontButton=state_button(screen,"Front",(pos[0],pos[1]+2*(self.button_height+self.button_spacing)),(self.width,self.button_height),(200, 255, 212),instance=False,corner_radius=0,border_width=1)
-        self.backButton=state_button(screen,"Back",(pos[0],pos[1]+3*(self.button_height+self.button_spacing)),(self.width,self.button_height),(253, 253, 189),instance=False,corner_radius=0,border_width=1)
-        self.leftButton=state_button(screen,"Left",(pos[0],pos[1]+4*(self.button_height+self.button_spacing)),(self.width,self.button_height),(200, 255, 212),instance=False,corner_radius=0,border_width=1)
-        self.rightButton=state_button(screen,"Right",(pos[0],pos[1]+5*(self.button_height+self.button_spacing)),(self.width,self.button_height),(253, 253, 189),instance=False,corner_radius=0,border_width=1)
+        self.light=(228, 208, 208)
+        self.dark=(213, 180, 180)
+        
+        self.topButton=state_button(screen,"Top",(pos[0],pos[1]),(self.width,self.button_height),self.light,instance=False,corner_radius=0,border_width=1)
+        self.bottomButton=state_button(screen,"Bottom",(pos[0],pos[1]+self.button_height+self.button_spacing),(self.width,self.button_height),self.dark,instance=False,corner_radius=0,border_width=1)
+        self.frontButton=state_button(screen,"Front",(pos[0],pos[1]+2*(self.button_height+self.button_spacing)),(self.width,self.button_height),self.light,instance=False,corner_radius=0,border_width=1)
+        self.backButton=state_button(screen,"Back",(pos[0],pos[1]+3*(self.button_height+self.button_spacing)),(self.width,self.button_height),self.dark,instance=False,corner_radius=0,border_width=1)
+        self.leftButton=state_button(screen,"Left",(pos[0],pos[1]+4*(self.button_height+self.button_spacing)),(self.width,self.button_height),self.light,instance=False,corner_radius=0,border_width=1)
+        self.rightButton=state_button(screen,"Right",(pos[0],pos[1]+5*(self.button_height+self.button_spacing)),(self.width,self.button_height),self.dark,instance=False,corner_radius=0,border_width=1)
         self.sidebar_buttons={
             "Top":self.topButton,
             "Bottom":self.bottomButton,
@@ -59,7 +62,7 @@ class sidebar(updater):
         self.backButton.draw()
         self.leftButton.draw()
         self.rightButton.draw()
-        pygame.draw.rect(self.screen,(177, 175, 255),(self.pos[0]+4,self.pos[1]+350+4,self.width-8,200))
+        pygame.draw.rect(self.screen,(241, 230, 252),(self.pos[0]+4,self.pos[1]+354,self.width-8,200))
 
 
         
