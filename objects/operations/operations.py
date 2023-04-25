@@ -1,4 +1,5 @@
 import pygame
+import math
 
 def display_text(surface, text, font, color, position):
     text_obj = font.render(text, True, color)
@@ -19,3 +20,17 @@ def calculate_text_color(rgb_tuple):
     if(darkness > 0.5):return (255,255,255)
     else:return (0,0,0)
     
+def rotated_text(text, font, angle):
+    # render the text onto a surface
+    text_surface = font.render(text, True, (255, 255, 255))
+    # get the size of the surface
+    surface_size = text_surface.get_size()
+    # calculate the size of the rotated surface
+    rotated_size = (int(surface_size[1] * math.sin(math.radians(angle))) + surface_size[0], int(surface_size[1] * math.cos(math.radians(angle))) + surface_size[1])
+    # create the rotated surface
+    rotated_surface = pygame.Surface(rotated_size, pygame.SRCALPHA)
+    # rotate the surface by the specified angle
+    rotated_surface = pygame.transform.rotate(rotated_surface, angle)
+    # blit the text onto the rotated surface
+    rotated_surface.blit(text_surface, (0, 0))
+    return rotated_surface

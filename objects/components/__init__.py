@@ -7,3 +7,4 @@ from objects.components.drawingboard import drawingboard
 from objects.components.toolbar import toolbar
 from objects.components.viewbar import viewbar
 from objects.components.sidebar import sidebar
+from objects.components.textbox import textbox

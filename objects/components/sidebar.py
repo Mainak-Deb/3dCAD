@@ -47,8 +47,8 @@ class sidebar(updater):
                         self.sidebar_buttons[j].state=False
 
 
-    def getView(self):
-        ...
+    def get_selected(self):
+        return self.state
 
     
     def draw(self):
