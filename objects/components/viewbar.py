@@ -59,7 +59,9 @@ class viewbar(updater):
         elif(slider==2):
             return self.slider2.get_value()
         
-    
+    def get_operation(self):
+        return self.operation
+
     def draw(self):
         pygame.draw.rect(self.screen,(self.color),(self.pos[0],self.pos[1],self.width,self.height))
         

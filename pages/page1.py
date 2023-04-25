@@ -43,7 +43,8 @@ def page1(screen,screenlengthx,screenlengthy):
         depthValueText.draw("DEPTH")
         depthValue.draw(str(viewbar.get_value(slider=2)))
         
-        drawingbox.set_width(viewbar.get_value(slider=1))   
+        drawingbox.set_width(viewbar.get_value(slider=1)) 
+        drawingbox.set_state(viewbar.get_operation())  
         
         
         pygame.display.update()

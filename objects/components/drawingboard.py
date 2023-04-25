@@ -20,10 +20,14 @@ class drawingboard(updater):
         self.line_width = 1
         self.line_color = color
         self.border_width = border_width
+        self.state="pen" #another state is "eraser"
         super().__init__()
         
     def set_width(self,width):
         self.line_width=width
+
+    def set_state(self,state):
+        self.state=state
         
     def maintain(self,a):
         if(a<0):return 0;
@@ -46,7 +50,10 @@ class drawingboard(updater):
         err = dx - dy
         while True:
             # set the pixel to True
-            self.pixel_array[self.maintain(y0),self.maintain(x0)] = True
+            if(self.state=="pen"):
+                self.pixel_array[self.maintain(y0),self.maintain(x0)] = True
+            elif(self.state=="eraser"):
+                self.pixel_array[self.maintain(y0),self.maintain(x0)] = False
             # check if we've reached the end of the line
             if x0 == x1 and y0 == y1:
                 break
