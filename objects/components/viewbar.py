@@ -28,24 +28,31 @@ class viewbar(updater):
         self.line_spacing=4
         
         self.slider1Text=textbox(screen,(0,pos[1],400,25),color=self.slider1Color_bg,text_size=20)
-        self.slider1=slider(screen,(15,pos[1]+35),300,10,max_value=10,min_value=0,default_value=5,color=self.slider1Color)
+        self.slider1=slider(screen,(15,pos[1]+35),300,10,max_value=10,min_value=0,default_value=1,color=self.slider1Color)
         
         self.slider2Text=textbox(screen,(400,pos[1],400,25),color=self.slider2Color_bg,text_size=20)        
         self.slider2=slider(screen,(415,pos[1]+35),300,10,max_value=100,min_value=0,default_value=50,color=self.slider2Color)
         
         self.pen_button=state_button(screen,position=(50+self.line_spacing,102),size=(80,24),text="Brush",color=self.button_color,instance=False,corner_radius=10,zoom=0.8 ,text_color=(0, 65, 112))
-        self.pen_button.state=False
+        self.pen_button.state=True
         
-        self.eraser_button=state_button(screen,position=(130+2*self.line_spacing,102),size=(80,24),text="Eraser",color=self.button_color,instance=False,corner_radius=10,zoom=0.8,text_color=(0, 65, 112))
-        self.eraser_button.state=False
         
-        self.line_button=state_button(screen,position=(210+3*self.line_spacing,102),size=(80,24),text="Line",color=self.button_color,instance=False,corner_radius=10,zoom=0.8,text_color=(0, 65, 112))
+        self.line_button=state_button(screen,position=(130+2*self.line_spacing,102),size=(80,24),text="Line",color=self.button_color,instance=False,corner_radius=10,zoom=0.8,text_color=(0, 65, 112))
         self.line_button.state=False
         
-        self.fill_button=state_button(screen,position=(290+4*self.line_spacing,102),size=(80,24),text="Fill",color=self.button_color,instance=False,corner_radius=10,zoom=0.8,text_color=(0, 65, 112))
+        self.fill_button=state_button(screen,position=(210+3*self.line_spacing,102),size=(80,24),text="Fill",color=self.button_color,instance=False,corner_radius=10,zoom=0.8,text_color=(0, 65, 112))
         self.fill_button.state=False
         
+        self.grid_button=state_button(screen,position=(290+4*self.line_spacing,102),size=(80,24),text="Grid",color=(199, 255, 231),instance=False,corner_radius=10,zoom=0.8,text_color=(1, 64, 37))
+        self.grid_button.state=False
+        
         self.select_text=textbox(screen,(470,100,240,30),color=(255, 238, 179),text_size=20,text_color=(158, 111, 33),rotation=0)
+        
+        self.button_obj={
+            "pen":self.pen_button,
+            "line":self.line_button,
+            "fill":self.fill_button
+        }
         
         super().__init__()
         
@@ -54,14 +61,16 @@ class viewbar(updater):
         self.slider1.update(event)
         self.slider2Text.update(event)
         self.slider2.update(event)
-        if(self.pen_button.update(event)):
-            self.eraser_button.state=False
-            self.operation="pen"
-        if(self.eraser_button.update(event)):
-            self.pen_button.state=False
-            self.operation="eraser"
-        self.fill_button.update(event)
-        self.line_button.update(event)
+        
+        self.grid_button.update(event)
+        
+        for i in self.button_obj.keys():
+            currentState=self.button_obj[i].update(event)
+            if currentState:
+                self.operation=i
+                for j in self.button_obj.keys():
+                    if j!=i:
+                        self.button_obj[j].state=False
             
     def get_value(self,slider):
         if(slider==1):
@@ -71,6 +80,9 @@ class viewbar(updater):
         
     def get_operation(self):
         return self.operation
+    
+    def get_grid(self):
+        return self.grid_button.state
 
     def draw(self):
         pygame.draw.rect(self.screen,(self.color),(self.pos[0],self.pos[1],self.width,self.height))
@@ -85,10 +97,11 @@ class viewbar(updater):
         
         
         self.pen_button.draw()
-        self.eraser_button.draw()
+        self.grid_button.draw()
         self.fill_button.draw()
         self.line_button.draw()
-        self.select_text.draw(self.operation.upper()+" SELECTED")
+        text=self.operation.upper()+" SELECTED ; "+ ("GRID : ON" if self.grid_button.state else "GRID : OFF")
+        self.select_text.draw(text)
         pygame.draw.line(self.screen,(117, 52, 128),(self.pos[0]+400-1,self.pos[1]+10),(self.pos[0]+400-1,self.pos[1]+self.height-40),2)
         pygame.draw.line(self.screen,(117, 52, 128),(0,128),(self.width,128),1)
         pygame.draw.line(self.screen,(117, 52, 128),(0,35),(self.width,35),1)
