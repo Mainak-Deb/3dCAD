@@ -6,10 +6,10 @@ from objects.shapes import *
 from objects.components.updater import updater
 
 class button(updater):    
-    def __init__(self,surface, text, position, size, color=(150,150,150),instance=True,text_color=(0,0,0),corner_radius=10,border_width=1):
+    def __init__(self,surface, text, position, size, color=(150,150,150),instance=True,text_color=(0,0,0),corner_radius=10,border_width=1,zoom=0.5):
         self.surface = surface
         self.text = text
-        self.font = pygame.font.Font(None, int(size[1]*0.5))
+        self.font = pygame.font.Font(None, int(size[1]*zoom))
         self.position = position
         self.size = size
         self.color = color
@@ -19,13 +19,13 @@ class button(updater):
         self.hovered = False
         self.border_width=border_width
         self.border_color=modify_color(color,20)
-        self.text_color = calculate_text_color(color)
+        self.text_color = text_color
         self.text_surface = self.font.render(self.text, True, self.text_color)
         self.state=False
         if(instance):super().__init__()
         
     def update_font_color(self,color):
-        self.text_color = calculate_text_color(color)
+        
         self.text_surface = self.font.render(self.text, True, self.text_color)
 
     def draw_button(self):
@@ -55,8 +55,8 @@ class button(updater):
         
 
 class icon_button(button):
-    def __init__(self,surface:any,iconpath:str, position:tuple, size:tuple, color:tuple=(150,150,150),instance=True,text_color:tuple=(0,0,0),corner_radius:int=10,border_width:int=1):
-        super().__init__(surface,None, position, size, color,instance,text_color, corner_radius,border_width)
+    def __init__(self,surface:any,iconpath:str, position:tuple, size:tuple, color:tuple=(150,150,150),instance=True,text_color:tuple=(0,0,0),corner_radius:int=10,border_width:int=1,zoom=0.5):
+        super().__init__(surface,None, position, size, color,instance,text_color, corner_radius,border_width,zoom)
         self.icon= pygame.image.load(iconpath).convert_alpha()
         
     def draw_button(self):
@@ -67,8 +67,8 @@ class icon_button(button):
         self.surface.blit(self.icon, self.icon.get_rect(center = self.rect.center))
     
 class state_button(button):
-    def __init__(self,surface:any,text:str, position:tuple, size:tuple, color:tuple=(150,150,150),instance=True,text_color:tuple=(0,0,0),corner_radius:int=10,border_width:int=1):
-        super().__init__(surface,text, position, size, color,instance,text_color, corner_radius,border_width)
+    def __init__(self,surface:any,text:str, position:tuple, size:tuple, color:tuple=(150,150,150),instance=True,text_color:tuple=(0,0,0),corner_radius:int=10,border_width:int=1,zoom=0.5):
+        super().__init__(surface,text, position, size, color,instance,text_color, corner_radius,border_width,zoom)
         self.state_color=modify_color(color,80)
         
         

@@ -10,9 +10,9 @@ import objects
 
 
 def page1(screen,screenlengthx,screenlengthy): 
-    toolbar=objects.components.toolbar(screen,(0,0),screenlengthx,28)
-    viewbar=objects.components.viewbar(screen,(0,28),screenlengthx,102,color=(200,200,200))
-    drawingbox=objects.components.drawingboard(screen,(50,129),size=600,axis_density=100) 
+    toolbar=objects.components.toolbar(screen,(0,0),screenlengthx,35,color=(241, 246, 249))
+    viewbar=objects.components.viewbar(screen,(0,35),screenlengthx,95,color=(250, 205, 248))
+    drawingbox=objects.components.drawingboard(screen,(50,129),size=600,axis_density=100,color=(155,155,155)) 
     
     sidebar=objects.components.sidebar(screen,(650,129),150,600,color=(253, 244, 245))
      
@@ -45,7 +45,8 @@ def page1(screen,screenlengthx,screenlengthy):
         
         drawingbox.set_width(viewbar.get_value(slider=1)) 
         drawingbox.set_state(viewbar.get_operation())  
-        
+        pygame.draw.line(screen,(61, 18, 18),(50,130),(50,screenlengthy),1)
+
         
         pygame.display.update()
                         

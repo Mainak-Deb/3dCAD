@@ -63,6 +63,7 @@ class sidebar(updater):
         self.leftButton.draw()
         self.rightButton.draw()
         pygame.draw.rect(self.screen,(241, 230, 252),(self.pos[0]+4,self.pos[1]+354,self.width-8,200))
+        pygame.draw.line(self.screen,(61, 18, 18),(self.pos[0]+1,self.pos[1]),(self.pos[0]+1,self.pos[1]+self.height),1)
 
 
         

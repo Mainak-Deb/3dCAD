@@ -13,10 +13,10 @@ class toolbar(updater):
         self.width = width
         self.color = color
         self.height = height
-        self.homebutton=button(screen,"Home",(0,0),(80,self.height),(255,255,255),instance=False,corner_radius=0,border_width=1)
-        self.newbutton=button(screen,"New",(80,0),(80,self.height),(255,255,255),instance=False,corner_radius=0,border_width=1)
-        self.openbutton=button(screen,"Open",(160,0),(80,self.height),(255,255,255),instance=False,corner_radius=0,border_width=0)
-        self.savebutton=button(screen,"Save",(240,0),(80,self.height),(255,255,255),instance=False,corner_radius=0,border_width=0)
+        self.homebutton=button(screen,"Home",(0,0),(80,self.height),self.color,instance=False,corner_radius=0,border_width=1)
+        self.newbutton=button(screen,"New",(80,0),(80,self.height),self.color,instance=False,corner_radius=0,border_width=1)
+        self.openbutton=button(screen,"Open",(160,0),(80,self.height),self.color,instance=False,corner_radius=0,border_width=0)
+        self.savebutton=button(screen,"Save",(240,0),(80,self.height),self.color,instance=False,corner_radius=0,border_width=0)
         super().__init__()
         
     def update(self,event):

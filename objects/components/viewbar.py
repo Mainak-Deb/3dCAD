@@ -18,25 +18,34 @@ class viewbar(updater):
         
         self.operation="pen"
         
-        self.slider1Color_bg=(187, 214, 184)
-        self.slider1Color=(148, 175, 159)
+        self.slider1Color_bg=(228, 201, 255)
+        self.slider1Color=(147, 132, 209)
         
-        self.slider2Color_bg=(174, 226, 255)
-        self.slider2Color=(147, 198, 231)
+        self.slider2Color_bg=(228, 201, 255)
+        self.slider2Color=(147, 132, 209)
         
-        self.slider1Text=textbox(screen,(0,pos[1],400,30),color=self.slider1Color_bg,text_size=20)
-        self.slider1=slider(screen,(15,pos[1]+40),300,12,max_value=10,min_value=0,default_value=5,color=self.slider1Color)
+        self.button_color=(204, 232, 252)
+        self.line_spacing=4
         
-        self.slider2Text=textbox(screen,(400,pos[1],400,30),color=self.slider2Color_bg,text_size=20)        
-        self.slider2=slider(screen,(415,pos[1]+40),300,12,max_value=100,min_value=0,default_value=50,color=self.slider2Color)
+        self.slider1Text=textbox(screen,(0,pos[1],400,25),color=self.slider1Color_bg,text_size=20)
+        self.slider1=slider(screen,(15,pos[1]+35),300,10,max_value=10,min_value=0,default_value=5,color=self.slider1Color)
         
-        self.pen_button=state_button(screen,position=(50,100),size=(80,30),text="Pen",color=(213, 126, 247),instance=False,corner_radius=0)
-        self.pen_button.state=True
+        self.slider2Text=textbox(screen,(400,pos[1],400,25),color=self.slider2Color_bg,text_size=20)        
+        self.slider2=slider(screen,(415,pos[1]+35),300,10,max_value=100,min_value=0,default_value=50,color=self.slider2Color)
         
-        self.eraser_button=state_button(screen,position=(130,100),size=(80,30),text="Eraser",color=(213, 126, 247),instance=False,corner_radius=0)
+        self.pen_button=state_button(screen,position=(50+self.line_spacing,102),size=(80,24),text="Brush",color=self.button_color,instance=False,corner_radius=10,zoom=0.8 ,text_color=(0, 65, 112))
+        self.pen_button.state=False
+        
+        self.eraser_button=state_button(screen,position=(130+2*self.line_spacing,102),size=(80,24),text="Eraser",color=self.button_color,instance=False,corner_radius=10,zoom=0.8,text_color=(0, 65, 112))
         self.eraser_button.state=False
         
-        self.select_text=textbox(screen,(210,100,140,30),color=(255, 238, 179),text_size=20,text_color=(158, 111, 33),rotation=0)
+        self.line_button=state_button(screen,position=(210+3*self.line_spacing,102),size=(80,24),text="Line",color=self.button_color,instance=False,corner_radius=10,zoom=0.8,text_color=(0, 65, 112))
+        self.line_button.state=False
+        
+        self.fill_button=state_button(screen,position=(290+4*self.line_spacing,102),size=(80,24),text="Fill",color=self.button_color,instance=False,corner_radius=10,zoom=0.8,text_color=(0, 65, 112))
+        self.fill_button.state=False
+        
+        self.select_text=textbox(screen,(470,100,240,30),color=(255, 238, 179),text_size=20,text_color=(158, 111, 33),rotation=0)
         
         super().__init__()
         
@@ -51,7 +60,8 @@ class viewbar(updater):
         if(self.eraser_button.update(event)):
             self.pen_button.state=False
             self.operation="eraser"
-        
+        self.fill_button.update(event)
+        self.line_button.update(event)
             
     def get_value(self,slider):
         if(slider==1):
@@ -66,15 +76,22 @@ class viewbar(updater):
         pygame.draw.rect(self.screen,(self.color),(self.pos[0],self.pos[1],self.width,self.height))
         
         self.slider1Text.draw("WIDTH")
-        pygame.draw.rect(self.screen,self.slider1Color_bg,(0,self.pos[1]+30,400,40))
+        pygame.draw.rect(self.screen,self.slider1Color_bg,(0,self.pos[1]+25,400,40))
         self.slider1.draw()
         
         self.slider2Text.draw("DEPTH")
-        pygame.draw.rect(self.screen,self.slider2Color_bg,(400,self.pos[1]+30,400,40))
+        pygame.draw.rect(self.screen,self.slider2Color_bg,(400,self.pos[1]+25,400,40))
         self.slider2.draw()
+        
         
         self.pen_button.draw()
         self.eraser_button.draw()
+        self.fill_button.draw()
+        self.line_button.draw()
         self.select_text.draw(self.operation.upper()+" SELECTED")
+        pygame.draw.line(self.screen,(117, 52, 128),(self.pos[0]+400-1,self.pos[1]+10),(self.pos[0]+400-1,self.pos[1]+self.height-40),2)
+        pygame.draw.line(self.screen,(117, 52, 128),(0,128),(self.width,128),1)
+        pygame.draw.line(self.screen,(117, 52, 128),(0,35),(self.width,35),1)
+        
         
         
