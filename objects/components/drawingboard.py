@@ -7,13 +7,13 @@ from objects.components.updater import updater
 from objects.operations import modify_color
 
 class drawingboard(updater):
-    def __init__(self, screen, position, size=400,color=(0,0,255),axis_density=100,border_width=1,depth=1):
+    def __init__(self, screen,position, size=400,color=(0,0,255),axis_density=100,border_width=1,depth=1):
         self.screen = screen
         self.positionX=position[0]
         self.positionY=position[1]
         self.size=size
         self.axis_density=axis_density
-        self.pixel_array = np.ones((axis_density,axis_density), dtype='uint8')*100
+        self.pixel_array =np.zeros((self.axis_density, self.axis_density), dtype='uint8')
         self.pixel_size = size//axis_density
         self.is_dragging = False
         self.start_pos = None
@@ -28,6 +28,12 @@ class drawingboard(updater):
     
         super().__init__()
         
+    def set_array(self,arr):
+        self.pixel_array=arr
+        
+    def get_array(self):
+        return self.pixel_array    
+    
     def set_width(self,width):
         self.line_width=width
 
@@ -66,7 +72,7 @@ class drawingboard(updater):
         while True:
             # set the pixel to True
             
-            self.pixel_array[self.maintain(y0),self.maintain(x0)] =100-self.depth
+            self.pixel_array[self.maintain(y0),self.maintain(x0)] =self.depth
             
             # check if we've reached the end of the line
             if x0 == x1 and y0 == y1:
@@ -108,17 +114,17 @@ class drawingboard(updater):
 
     def flood_fill(self,position,value):
         if(position[0]<0 or position[0]>=self.axis_density or position[1]<0 or position[1]>=self.axis_density):return
+        if(value==(self.depth)):return
         y,x=position
         stack = [(x, y)]
         # Iterate until the stack is empty
         while stack:
-            print("working",len(stack))
             # Pop the next pixel to fill from the stack
             x, y = stack.pop()
             # Check if the pixel needs to be filled
             if self.pixel_array[x][y] == value:
                 # Fill the pixel with the new value
-                self.pixel_array[x][y] = 100-self.depth
+                self.pixel_array[x][y] = self.depth
                 # Add adjacent pixels to the stack
                 if x > 0:
                     stack.append((x - 1, y))  # Pixel to the left
@@ -186,7 +192,7 @@ class drawingboard(updater):
         for i in range(self.pixel_array.shape[0]):
             for j in range(self.pixel_array.shape[1]):
                     rect = pygame.Rect(self.positionX+j * self.pixel_size,self.positionY+ i * self.pixel_size, self.pixel_size, self.pixel_size)
-                    pygame.draw.rect(self.screen, modify_color(self.line_color,self.pixel_array[i, j]), rect)
+                    pygame.draw.rect(self.screen, modify_color(self.line_color,self.axis_density-self.pixel_array[i, j]), rect)
                     
         if(self.showgrid):
             grid_density=50
