@@ -185,14 +185,18 @@ class drawingboard(updater):
         self.handle_event(event)
         
     
-    
+    def map_depth(self,n):
+        nd=self.axis_density-n
+        nd=100*nd/self.axis_density
+        return int(nd)
+        
     def draw(self):
         pygame.draw.rect(self.screen, (255,255,255),(self.positionX,self.positionY,self.size,self.size))
         #pygame.draw.rect(self.screen, (0,0,0),(self.positionX-self.border_width,self.positionY-self.border_width,self.size+2*self.border_width,self.size+2*self.border_width),self.border_width)
         for i in range(self.pixel_array.shape[0]):
             for j in range(self.pixel_array.shape[1]):
                     rect = pygame.Rect(self.positionX+j * self.pixel_size,self.positionY+ i * self.pixel_size, self.pixel_size, self.pixel_size)
-                    pygame.draw.rect(self.screen, modify_color(self.line_color,self.axis_density-self.pixel_array[i, j]), rect)
+                    pygame.draw.rect(self.screen, modify_color(self.line_color,self.map_depth(self.pixel_array[i, j])), rect)
                     
         if(self.showgrid):
             grid_density=50

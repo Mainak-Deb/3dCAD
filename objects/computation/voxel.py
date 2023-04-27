@@ -1,6 +1,13 @@
 import pygame
 import sys
 import numpy as np
+import tkinter as tk
+from tkinter import filedialog
+from voxelfuse.voxel_model import VoxelModel
+from voxelfuse.mesh import Mesh
+from voxelfuse.primitives import generateMaterials
+import asyncio
+
 sys.path.append('./')
 
 class voxel():
@@ -24,9 +31,7 @@ class voxel():
         elif(toview=="Left"):return self.get_left_view()
         elif(toview=="Right"):return self.get_right_view()
         elif(toview=="Back"):return self.get_back_view()
-            
-            
-            
+                   
         
     #top view voxel oprations
     def get_top_view(self):
@@ -44,6 +49,9 @@ class voxel():
             for k in range(self.shape):
                 for i in range(view[j][k]):         
                     self.voxel_array[i][j][k]=False
+                for i in range(view[j][k],self.shape): 
+                    if(self.voxel_array[i][j][k]==True):break;     
+                    self.voxel_array[i][j][k]=True
                     
     
          
@@ -64,6 +72,9 @@ class voxel():
             for k in range(self.shape):
                 for i in range(view[j][k]):
                     self.voxel_array[self.shape-i-1][j][k]=False
+                for i in range(view[j][k],self.shape): 
+                    if(self.voxel_array[self.shape-i-1][j][k]==True):break;     
+                    self.voxel_array[self.shape-i-1][j][k]=True
      
     #front view voxel oprations
     def get_front_view(self):
@@ -82,6 +93,9 @@ class voxel():
             for k in range(self.shape):
                 for j in range(view[i][k]):
                     self.voxel_array[i][j][k]=False
+                for j in range(view[i][k],self.shape): 
+                    if(self.voxel_array[i][j][k]==True):break;     
+                    self.voxel_array[i][j][k]=True
         
         
     #back view voxel oprations 
@@ -103,6 +117,9 @@ class voxel():
             for k in range(self.shape):
                 for j in range(view[i][k]):
                     self.voxel_array[i][self.shape-j-1][k]=False
+                for j in range(view[i][k],self.shape): 
+                    if(self.voxel_array[i][self.shape-j-1][k]==True):break;     
+                    self.voxel_array[i][self.shape-j-1][k]=True
                 
                 
     #right view voxel oprations
@@ -122,6 +139,9 @@ class voxel():
             for j in range(self.shape):
                 for k in range(view[i][j]):
                     self.voxel_array[i][j][k]=False
+                for k in range(view[i][j],self.shape): 
+                    if(self.voxel_array[i][j][k]==True):break;     
+                    self.voxel_array[i][j][k]=True
         
     #left view voxel oprations
     def get_left_view(self):
@@ -140,5 +160,28 @@ class voxel():
             for j in range(self.shape):
                 for k in range(view[i][j]):
                     self.voxel_array[i][j][self.shape-1-k]=False
+                for k in range(view[i][j],self.shape): 
+                    if(self.voxel_array[i][j][self.shape-1-k]==True):break;     
+                    self.voxel_array[i][j][self.shape-1-k]=True
+        
+    async def filesave(self,file_path):   
+        print("inside file save")    
+        model = VoxelModel(self.voxel_array, generateMaterials(4))  #4 is aluminium.
+        mesh = Mesh.fromVoxelModel(model)
+        mesh.export(file_path+'.stl')
+            
+            
+    async def save(self):
+        root = tk.Tk()
+        root.withdraw()
+        file_path = filedialog.asksaveasfilename()
+        print(file_path)
+        if(file_path==''):return
+        loop = asyncio.get_event_loop()
+        task=loop.create_task(self.filesave(file_path))
+        await task
+                    
+                    
+       
         
         

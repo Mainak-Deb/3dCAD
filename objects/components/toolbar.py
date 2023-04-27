@@ -18,13 +18,22 @@ class toolbar(updater):
         self.openbutton=button(screen,"Open",(160,0),(80,self.height),self.color,instance=False,corner_radius=0,border_width=0)
         self.savebutton=button(screen,"Save",(240,0),(80,self.height),self.color,instance=False,corner_radius=0,border_width=0)
         super().__init__()
+        self.state={
+            "home":False,
+            "new":False,
+            "open":False,
+            "save":False
+        }
         
     def update(self,event):
-        self.homebutton.update(event)
-        self.newbutton.update(event)
-        self.openbutton.update(event)
-        self.savebutton.update(event)
+        self.state["home"]=self.homebutton.update(event)
+        self.state["new"]=self.newbutton.update(event)
+        self.state["open"]=self.openbutton.update(event)
+        self.state["save"]=self.savebutton.update(event)
         
+        
+    def get_state(self,value):
+        return self.state[value]
     
     def draw(self):
         pygame.draw.rect(self.screen,(self.color),(self.pos[0],self.pos[1],self.width,self.height))

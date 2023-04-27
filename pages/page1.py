@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 
 import sys
+import  asyncio
 sys.path.append('./')
 
 import objects
@@ -11,12 +12,14 @@ import objects
 
 def page1(screen,screenlengthx,screenlengthy): 
     
-    voxel=objects.computation.voxel(100)
+    voxelsize=20
+    
+    voxel=objects.computation.voxel( voxelsize)
     
     
     toolbar=objects.components.toolbar(screen,(0,0),screenlengthx,35,color=(241, 246, 249))
-    viewbar=objects.components.viewbar(screen,(0,35),screenlengthx,95,color=(250, 205, 248))
-    drawingbox=objects.components.drawingboard(screen,(50,129),size=600,axis_density=100,color=( 255,255,255)) 
+    viewbar=objects.components.viewbar(screen,(0,35),screenlengthx,95,color=(250, 205, 248),sliderval=voxelsize)
+    drawingbox=objects.components.drawingboard(screen,(50,129),size=600,axis_density= voxelsize,color=( 255,255,255)) 
     
     sidebar=objects.components.sidebar(screen,(650,129),150,600,color=(253, 244, 245))
      
@@ -31,6 +34,8 @@ def page1(screen,screenlengthx,screenlengthy):
     
     drawingbox.set_array(voxel.get_top_view())
     previous_view="Top"
+    
+    toolbar_state=dict()
     
     
     running=True
@@ -58,9 +63,12 @@ def page1(screen,screenlengthx,screenlengthy):
         if(previous_view!=sidebar.get_selected()):
             #print("true",previous_view,sidebar.get_selected())
             viewarr=voxel.change_view(previous_view,sidebar.get_selected(),drawingbox.get_array())
-            print(viewarr)
             drawingbox.set_array(viewarr)
             previous_view=sidebar.get_selected()
+            
+        if(toolbar.get_state("save")):
+            asyncio.run(voxel.save())
+        
 
         
         pygame.display.update()

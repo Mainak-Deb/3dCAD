@@ -9,7 +9,7 @@ from objects.components.slider import slider
 from objects.components.textbox import textbox
 
 class viewbar(updater):
-    def __init__(self,screen,pos,width,height=28,color=(255,255,255)):
+    def __init__(self,screen,pos,width,height=28,color=(255,255,255),sliderval=100):
         self.screen = screen
         self.pos = pos
         self.width = width
@@ -28,10 +28,10 @@ class viewbar(updater):
         self.line_spacing=4
         
         self.slider1Text=textbox(screen,(0,pos[1],400,25),color=self.slider1Color_bg,text_size=20)
-        self.slider1=slider(screen,(15,pos[1]+35),300,10,max_value=10,min_value=0,default_value=1,color=self.slider1Color)
+        self.slider1=slider(screen,(15,pos[1]+35),300,10,max_value=(sliderval//10) +1,min_value=0,default_value=1,color=self.slider1Color)
         
         self.slider2Text=textbox(screen,(400,pos[1],400,25),color=self.slider2Color_bg,text_size=20)        
-        self.slider2=slider(screen,(415,pos[1]+35),300,10,max_value=100,min_value=0,default_value=100,color=self.slider2Color)
+        self.slider2=slider(screen,(415,pos[1]+35),300,10,max_value=sliderval,min_value=0,default_value=sliderval,color=self.slider2Color)
         
         self.pen_button=state_button(screen,position=(50+self.line_spacing,102),size=(80,24),text="Brush",color=self.button_color,instance=False,corner_radius=10,zoom=0.8 ,text_color=(0, 65, 112))
         self.pen_button.state=True
