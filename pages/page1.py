@@ -12,7 +12,7 @@ import objects
 
 def page1(screen,screenlengthx,screenlengthy): 
     
-    voxelsize=20
+    voxelsize=40
     
     voxel=objects.computation.voxel( voxelsize)
     
@@ -34,6 +34,7 @@ def page1(screen,screenlengthx,screenlengthy):
     
     drawingbox.set_array(voxel.get_top_view())
     previous_view="Top"
+    isSaved=False
     
     toolbar_state=dict()
     
@@ -67,10 +68,11 @@ def page1(screen,screenlengthx,screenlengthy):
             previous_view=sidebar.get_selected()
             
         if(toolbar.get_state("save")):
+            isSaved=True
             viewarr=voxel.change_view(sidebar.get_selected(),sidebar.get_selected(),drawingbox.get_array())
             voxel.save()
         elif(toolbar.get_state("open")):
-            opended_voxel=objects.computation.openSTL()
+            opended_voxel=objects.computation.openSTL(voxelsize)
             if  isinstance(opended_voxel, np.ndarray):
                 voxel.set_voxel_array(opended_voxel)
                 drawingbox.set_array(voxel.get_top_view())
@@ -79,6 +81,12 @@ def page1(screen,screenlengthx,screenlengthy):
                 sidetext.draw(sidebar.get_selected()+" view")
         elif(toolbar.get_state("show")):
             viewarr=voxel.change_view(sidebar.get_selected(),sidebar.get_selected(),drawingbox.get_array())
-            voxel.showvoxel()     
+            voxel.showvoxel()    
+        elif(toolbar.get_state("new")):
+            voxel.set_voxel_array(np.ones((voxelsize,voxelsize,voxelsize), dtype=bool))
+            drawingbox.set_array(voxel.get_top_view())
+            previous_view="Top"
+            sidebar.set_selected("Top")
+            sidetext.draw(sidebar.get_selected()+" view")
         pygame.display.update()
                         

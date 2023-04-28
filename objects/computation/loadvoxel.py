@@ -29,14 +29,31 @@ def loadvoxel(path,resolution=20):
     return binary_array
     
 
-def openSTL():
+def openSTL(vsize):
     root = tk.Tk()
     root.withdraw()
     file_path = filedialog.askopenfilename()
     print(file_path)   
     if(file_path==""):
         return None
-    return loadvoxel(file_path)
+    return loadvoxel(file_path,vsize)
+ 
+ 
+def popup():
+    def open_popup():
+        popup = tk.Toplevel()
+        popup.title("Error")
+        popup.geometry("200x100")
+        popup_label = tk.Label(popup, text="Are you sure you want to exit?")
+        popup_label.pack(padx=20, pady=20)
+    root = tk.Tk()
+    root.geometry("300x200")
+    popup_button = tk.Button(root, text="Open Popup", command=open_popup)
+    popup_button.pack(padx=20, pady=20)
+    root.mainloop()
+    
+
  
 if __name__ == '__main__':
-    openSTL()
+    popup()
+    #openSTL()
