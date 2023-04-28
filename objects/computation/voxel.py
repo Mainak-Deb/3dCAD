@@ -7,7 +7,9 @@ from voxelfuse.voxel_model import VoxelModel
 from voxelfuse.mesh import Mesh
 from voxelfuse.primitives import generateMaterials
 import asyncio
-
+import vtkplotlib as vpl
+from stl.mesh import Mesh as stlMesh
+import os
 sys.path.append('./')
 
 class voxel():
@@ -15,6 +17,9 @@ class voxel():
         self.shape=shape
         self.voxel_array = np.ones((self.shape, self.shape, self.shape), dtype=bool)
         
+        
+    def set_voxel_array(self,array):
+        self.voxel_array=array
         
     def change_view(self,fromview,toview,arr):
         print(fromview+" to "+toview)
@@ -164,24 +169,31 @@ class voxel():
                     if(self.voxel_array[i][j][self.shape-1-k]==True):break;     
                     self.voxel_array[i][j][self.shape-1-k]=True
         
-    async def filesave(self,file_path):   
+    def filesave(self,file_path):   
         print("inside file save")    
         model = VoxelModel(self.voxel_array, generateMaterials(4))  #4 is aluminium.
         mesh = Mesh.fromVoxelModel(model)
         mesh.export(file_path+'.stl')
             
             
-    async def save(self):
+    def save(self):
         root = tk.Tk()
         root.withdraw()
         file_path = filedialog.asksaveasfilename()
         print(file_path)
         if(file_path==''):return
-        loop = asyncio.get_event_loop()
-        task=loop.create_task(self.filesave(file_path))
-        await task
+        self.filesave(file_path)
+        
+    def showvoxel(self):
+        model = VoxelModel(self.voxel_array, generateMaterials(4))  #4 is aluminium.
+        mesh = Mesh.fromVoxelModel(model)
+        mesh.export('temp.stl')
+        m = stlMesh.from_file('temp.stl')
+        vpl.mesh_plot(m)
+        vpl.show()
+        os.remove('temp.stl')
+                            
                     
-                    
-       
+    
         
         

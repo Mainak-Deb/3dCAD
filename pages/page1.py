@@ -4,7 +4,7 @@ from pygame.locals import *
 import sys
 import  asyncio
 sys.path.append('./')
-
+import numpy as np
 import objects
 
 
@@ -67,9 +67,18 @@ def page1(screen,screenlengthx,screenlengthy):
             previous_view=sidebar.get_selected()
             
         if(toolbar.get_state("save")):
-            asyncio.run(voxel.save())
-        
-
-        
+            viewarr=voxel.change_view(sidebar.get_selected(),sidebar.get_selected(),drawingbox.get_array())
+            voxel.save()
+        elif(toolbar.get_state("open")):
+            opended_voxel=objects.computation.openSTL()
+            if  isinstance(opended_voxel, np.ndarray):
+                voxel.set_voxel_array(opended_voxel)
+                drawingbox.set_array(voxel.get_top_view())
+                previous_view="Top"
+                sidebar.set_selected("Top")
+                sidetext.draw(sidebar.get_selected()+" view")
+        elif(toolbar.get_state("show")):
+            viewarr=voxel.change_view(sidebar.get_selected(),sidebar.get_selected(),drawingbox.get_array())
+            voxel.showvoxel()     
         pygame.display.update()
                         

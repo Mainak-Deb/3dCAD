@@ -1,5 +1,6 @@
 import pygame
 import sys
+
 sys.path.append('./')
 from objects.operations import *
 from objects.shapes import *
@@ -17,12 +18,14 @@ class toolbar(updater):
         self.newbutton=button(screen,"New",(80,0),(80,self.height),self.color,instance=False,corner_radius=0,border_width=1)
         self.openbutton=button(screen,"Open",(160,0),(80,self.height),self.color,instance=False,corner_radius=0,border_width=0)
         self.savebutton=button(screen,"Save",(240,0),(80,self.height),self.color,instance=False,corner_radius=0,border_width=0)
+        self.showbutton=button(screen,"Show",(320,0),(80,self.height),self.color,instance=False,corner_radius=0,border_width=0)
         super().__init__()
         self.state={
             "home":False,
             "new":False,
             "open":False,
-            "save":False
+            "save":False,
+            "show":False
         }
         
     def update(self,event):
@@ -30,6 +33,7 @@ class toolbar(updater):
         self.state["new"]=self.newbutton.update(event)
         self.state["open"]=self.openbutton.update(event)
         self.state["save"]=self.savebutton.update(event)
+        self.state["show"]=self.showbutton.update(event)
         
         
     def get_state(self,value):
@@ -41,6 +45,7 @@ class toolbar(updater):
         self.newbutton.draw()
         self.openbutton.draw()
         self.savebutton.draw()
+        self.showbutton.draw()
         
     
         

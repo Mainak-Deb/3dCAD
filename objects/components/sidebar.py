@@ -53,6 +53,8 @@ class sidebar(updater):
     def get_selected(self):
         return self.state
 
+    def set_selected(self,state):
+        self.state=state
     
     def draw(self):
         pygame.draw.rect(self.screen,(self.color),(self.pos[0],self.pos[1],self.width,self.height))

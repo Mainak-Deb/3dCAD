@@ -1,2 +1,8 @@
-pygame
-numpy
+matplotlib==3.7.1
+numpy==1.23.5
+numpy-stl==2.17.1
+pygame==2.1.2
+voxelfuse==1.2.8
+vtkplotlib==2.1.0
+opencv-python==4.7.0.72
+stl-to-voxel==0.9.3
