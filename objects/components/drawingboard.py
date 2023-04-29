@@ -135,7 +135,24 @@ class drawingboard(updater):
                 if y <self.axis_density - 1:
                     stack.append((x, y + 1))  # Pixel below
             
-  
+    def draw_rect(self,pos1,pos2):
+        self.draw_line((pos1[0],pos2[1]),(pos2[0],pos2[1]))
+        self.draw_line((pos1[0],pos1[1]),(pos2[0],pos1[1]))
+        self.draw_line((pos1[0],pos1[1]),(pos1[0],pos2[1]))
+        self.draw_line((pos2[0],pos1[1]),(pos2[0],pos2[1]))
+
+    def draw_circle(self,pos1,pos2):
+        radius=math.sqrt((pos1[0]-pos2[0])**2+(pos1[1]-pos2[1])**2)
+        for i in range(360):
+            angle1=math.radians(i)
+            x1=math.floor(pos1[0]+radius*math.cos(angle1))
+            y1=math.floor(pos1[1]+radius*math.sin(angle1))
+
+            angle2=math.radians(i+1)
+            x2=math.floor(pos1[0]+radius*math.cos(angle2))
+            y2=math.floor(pos1[1]+radius*math.sin(angle2))
+
+            self.draw_line((x1,y1),(x2,y2))
         
     def handle_event(self,event):
         if event.type == pygame.QUIT:
@@ -161,8 +178,7 @@ class drawingboard(updater):
                 pos=event.pos
                 if((pos[0]>self.positionX and pos[0]<self.positionX+self.size) and (pos[1]>self.positionY and pos[1]<self.positionY+self.size)):  
                     arval=self.screen_to_array(event.pos)
-                    self.flood_fill(arval,self.pixel_array[self.maintain(arval[1]),self.maintain(arval[0])])
-            
+                    self.flood_fill(arval,self.pixel_array[self.maintain(arval[1]),self.maintain(arval[0])])         
         elif(self.state=="line"):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # start drawing the line when the mouse button is pressed
@@ -178,7 +194,39 @@ class drawingboard(updater):
             elif event.type == pygame.MOUSEMOTION and self.is_dragging:
                 # draw the line as the mouse is dragged
                 end_pos = self.screen_to_array(pygame.mouse.get_pos())
+        elif(self.state=="rect"):
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # start drawing the line when the mouse button is pressed
+                self.is_dragging = True
+                self.start_pos = self.screen_to_array(event.pos)
+            elif event.type == pygame.MOUSEBUTTONUP:
+                # stop drawing the line when the mouse button is released
+                self.is_dragging = False
+                end_pos = self.screen_to_array(pygame.mouse.get_pos())               
+                if(end_pos==None or self.start_pos==None):return    
+                self.draw_rect(self.start_pos, end_pos)
+                self.start_pos=None
+            elif event.type == pygame.MOUSEMOTION and self.is_dragging:
+                # draw the line as the mouse is dragged
+                end_pos = self.screen_to_array(pygame.mouse.get_pos())
+            
+        elif(self.state=="circle"):
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # start drawing the line when the mouse button is pressed
+                self.is_dragging = True
+                self.start_pos = self.screen_to_array(event.pos)
+            elif event.type == pygame.MOUSEBUTTONUP:
+                # stop drawing the line when the mouse button is released
+                self.is_dragging = False
+                end_pos = self.screen_to_array(pygame.mouse.get_pos())               
+                if(end_pos==None or self.start_pos==None):return    
+                self.draw_circle(self.start_pos, end_pos)
+                self.start_pos=None
+            elif event.type == pygame.MOUSEMOTION and self.is_dragging:
+                # draw the line as the mouse is dragged
+                end_pos = self.screen_to_array(pygame.mouse.get_pos())
                 
+    
       
            
     def update(self,event):
@@ -189,6 +237,13 @@ class drawingboard(updater):
         nd=self.axis_density-n
         nd=100*nd/self.axis_density
         return int(nd)
+    
+    def pygame_rect(self,pos1,pos2):
+        pygame.draw.line(self.screen,(28, 185, 252),(pos1[0],pos2[1]),(pos2[0],pos2[1]),self.line_width)
+        pygame.draw.line(self.screen,(28, 185, 252),(pos1[0],pos1[1]),(pos2[0],pos1[1]),self.line_width)
+        pygame.draw.line(self.screen,(28, 185, 252),(pos1[0],pos1[1]),(pos1[0],pos2[1]),self.line_width)
+        pygame.draw.line(self.screen,(28, 185, 252),(pos2[0],pos1[1]),(pos2[0],pos2[1]),self.line_width)
+        
         
     def draw(self):
         pygame.draw.rect(self.screen, (255,255,255),(self.positionX,self.positionY,self.size,self.size))
@@ -199,7 +254,7 @@ class drawingboard(updater):
                     pygame.draw.rect(self.screen, modify_color(self.line_color,self.map_depth(self.pixel_array[i, j])), rect)
                     
         if(self.showgrid):
-            grid_density=50
+            grid_density=min(50,self.axis_density)
             grid_gap=self.size/grid_density
             for i in range(grid_density):
                     pygame.draw.line(self.screen, self.grid_color, (self.positionX+(i*grid_gap),self.positionY),(self.positionX+(i*grid_gap),self.positionY+self.size), 1)
@@ -210,6 +265,18 @@ class drawingboard(updater):
             mx,my=pygame.mouse.get_pos()
             draw_pos=self.array_to_screen(self.start_pos)
             pygame.draw.line(self.screen, (28, 185, 252), draw_pos,(mx,my), self.line_width)
+
+        if (self.state=="rect" and self.is_dragging and (self.start_pos!=None)):
+            mx,my=pygame.mouse.get_pos()
+            draw_pos=self.array_to_screen(self.start_pos)
+            self.pygame_rect(draw_pos,(mx,my))
+
+        if (self.state=="circle" and self.is_dragging and (self.start_pos!=None)):
+            mx,my=pygame.mouse.get_pos()
+            draw_pos=self.array_to_screen(self.start_pos)
+            pygame.draw.circle(self.screen, (28, 185, 252), draw_pos, int(math.sqrt((mx-draw_pos[0])**2+(my-draw_pos[1])**2)), self.line_width)
+        
+        
         
 
         

@@ -25,6 +25,8 @@ class viewbar(updater):
         self.slider2Color=(147, 132, 209)
         
         self.button_color=(204, 232, 252)
+        self.button_color2=(222, 252, 204)
+
         self.line_spacing=4
         
         self.slider1Text=textbox(screen,(0,pos[1],400,25),color=self.slider1Color_bg,text_size=20)
@@ -33,25 +35,35 @@ class viewbar(updater):
         self.slider2Text=textbox(screen,(400,pos[1],400,25),color=self.slider2Color_bg,text_size=20)        
         self.slider2=slider(screen,(415,pos[1]+35),300,10,max_value=sliderval,min_value=0,default_value=sliderval,color=self.slider2Color)
         
-        self.pen_button=state_button(screen,position=(50+self.line_spacing,102),size=(80,24),text="Brush",color=self.button_color,instance=False,corner_radius=10,zoom=0.8 ,text_color=(0, 65, 112))
+        self.pen_button=state_button(screen,position=(50+self.line_spacing,102),size=(80,24),text="Brush",color=self.button_color2,instance=False,corner_radius=10,zoom=0.8 ,text_color=(0, 65, 112))
         self.pen_button.state=True
         
         
-        self.line_button=state_button(screen,position=(130+2*self.line_spacing,102),size=(80,24),text="Line",color=self.button_color,instance=False,corner_radius=10,zoom=0.8,text_color=(0, 65, 112))
+        self.line_button=state_button(screen,position=(370+5*self.line_spacing,102),size=(80,24),text="Line",color=self.button_color,instance=False,corner_radius=10,zoom=0.8,text_color=(0, 65, 112))
         self.line_button.state=False
+
+        self.rect_button=state_button(screen,position=(210+3*self.line_spacing,102),size=(80,24),text="Rect",color=self.button_color,instance=False,corner_radius=10,zoom=0.8,text_color=(0, 65, 112))
+        self.rect_button.state=False
+
+        self.circle_button=state_button(screen,position=(290+4*self.line_spacing,102),size=(80,24),text="Circle",color=self.button_color,instance=False,corner_radius=10,zoom=0.8,text_color=(0, 65, 112))
+        self.circle_button.state=False
+
+
         
-        self.fill_button=state_button(screen,position=(210+3*self.line_spacing,102),size=(80,24),text="Fill",color=self.button_color,instance=False,corner_radius=10,zoom=0.8,text_color=(0, 65, 112))
+        self.fill_button=state_button(screen,position=(130+2*self.line_spacing,102),size=(80,24),text="Fill",color=self.button_color2,instance=False,corner_radius=10,zoom=0.8,text_color=(0, 65, 112))
         self.fill_button.state=False
         
-        self.grid_button=state_button(screen,position=(290+4*self.line_spacing,102),size=(80,24),text="Grid",color=(199, 255, 231),instance=False,corner_radius=10,zoom=0.8,text_color=(1, 64, 37))
+        self.grid_button=state_button(screen,position=(450+6*self.line_spacing,102),size=(80,24),text="Grid",color=(199, 255, 231),instance=False,corner_radius=10,zoom=0.8,text_color=(1, 64, 37))
         self.grid_button.state=False
         
-        self.select_text=textbox(screen,(470,100,240,30),color=(255, 238, 179),text_size=20,text_color=(158, 111, 33),rotation=0)
+        self.select_text=textbox(screen,(580,100,120,30),color=(255, 238, 179),text_size=20,text_color=(158, 111, 33),rotation=0)
         
         self.button_obj={
             "pen":self.pen_button,
             "line":self.line_button,
-            "fill":self.fill_button
+            "fill":self.fill_button,
+            "rect":self.rect_button,
+            "circle":self.circle_button
         }
         
         super().__init__()
@@ -82,7 +94,10 @@ class viewbar(updater):
         return self.operation
     
     def get_grid(self):
-        return self.grid_button.state
+        return self.grid_button
+    
+
+        
 
     def draw(self):
         pygame.draw.rect(self.screen,(self.color),(self.pos[0],self.pos[1],self.width,self.height))
@@ -100,7 +115,9 @@ class viewbar(updater):
         self.grid_button.draw()
         self.fill_button.draw()
         self.line_button.draw()
-        text=self.operation.upper()+" SELECTED ; "+ ("GRID : ON" if self.grid_button.state else "GRID : OFF")
+        self.rect_button.draw()
+        self.circle_button.draw()
+        text=self.operation.upper()+" SELECTED "
         self.select_text.draw(text)
         pygame.draw.line(self.screen,(117, 52, 128),(self.pos[0]+400-1,self.pos[1]+10),(self.pos[0]+400-1,self.pos[1]+self.height-40),2)
         pygame.draw.line(self.screen,(117, 52, 128),(0,128),(self.width,128),1)
