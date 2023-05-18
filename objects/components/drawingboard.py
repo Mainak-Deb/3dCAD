@@ -5,6 +5,8 @@ import numpy as np
 import math
 from objects.components.updater import updater
 from objects.operations import modify_color
+from objects.computation import undo
+
 
 class drawingboard(updater):
     def __init__(self, screen,position, size=400,color=(0,0,255),axis_density=100,border_width=1,depth=1):
@@ -23,6 +25,7 @@ class drawingboard(updater):
         self.depth=depth
         self.state="pen" #another state is "eraser" "fill" "line"
         self.showgrid=False
+        self.undo=undo()
         
         self.grid_color=(255,33,81)
     
@@ -71,8 +74,9 @@ class drawingboard(updater):
         err = dx - dy
         while True:
             # set the pixel to True
-            
+            predepth=self.pixel_array[self.maintain(y0),self.maintain(x0)]
             self.pixel_array[self.maintain(y0),self.maintain(x0)] =self.depth
+            self.undo.add((self.maintain(y0),self.maintain(x0)),predepth,self.depth)
             
             # check if we've reached the end of the line
             if x0 == x1 and y0 == y1:
@@ -98,6 +102,7 @@ class drawingboard(updater):
     
 
     def draw_line(self, start_pos, end_pos):
+        self.undo.open_container("line")
         self.bresenham_line_algo(start_pos, end_pos)
         angle=self.angle_between_points(start_pos,end_pos)
         if((135<angle<225) or (45>angle) or (angle>270)):
@@ -110,9 +115,11 @@ class drawingboard(updater):
                 modified_start_pos = (start_pos[0]-i,start_pos[1])
                 modified_end_pos=(end_pos[0]-i,end_pos[1])
                 self.bresenham_line_algo(modified_start_pos, modified_end_pos)
+        self.undo.close_container("line")
 
 
     def flood_fill(self,position,value):
+        self.undo.open_container("fill")
         if(position[0]<0 or position[0]>=self.axis_density or position[1]<0 or position[1]>=self.axis_density):return
         if(value==(self.depth)):return
         y,x=position
@@ -124,7 +131,9 @@ class drawingboard(updater):
             # Check if the pixel needs to be filled
             if self.pixel_array[x][y] == value:
                 # Fill the pixel with the new value
+                predepth=self.pixel_array[x][y]
                 self.pixel_array[x][y] = self.depth
+                self.undo.add((x,y),predepth,self.depth)
                 # Add adjacent pixels to the stack
                 if x > 0:
                     stack.append((x - 1, y))  # Pixel to the left
@@ -134,14 +143,19 @@ class drawingboard(updater):
                     stack.append((x, y - 1))  # Pixel above
                 if y <self.axis_density - 1:
                     stack.append((x, y + 1))  # Pixel below
+        self.undo.close_container("fill")
+        
             
     def draw_rect(self,pos1,pos2):
+        self.undo.open_container("rect")
         self.draw_line((pos1[0],pos2[1]),(pos2[0],pos2[1]))
         self.draw_line((pos1[0],pos1[1]),(pos2[0],pos1[1]))
         self.draw_line((pos1[0],pos1[1]),(pos1[0],pos2[1]))
         self.draw_line((pos2[0],pos1[1]),(pos2[0],pos2[1]))
+        self.undo.close_container("rect")
 
     def draw_circle(self,pos1,pos2):
+        self.undo.open_container("circle")
         radius=math.sqrt((pos1[0]-pos2[0])**2+(pos1[1]-pos2[1])**2)
         for i in range(360):
             angle1=math.radians(i)
@@ -153,11 +167,14 @@ class drawingboard(updater):
             y2=math.floor(pos1[1]+radius*math.sin(angle2))
 
             self.draw_line((x1,y1),(x2,y2))
+        self.undo.close_container("circle")
+        
         
     def handle_event(self,event):
         if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+
         if((self.state=="pen") or (self.state=="eraser")):  
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # start drawing the line when the mouse button is pressed
@@ -173,6 +190,7 @@ class drawingboard(updater):
                 if(end_pos==None or self.start_pos==None):return
                 self.draw_line(self.start_pos, end_pos)
                 self.start_pos = end_pos
+        
         elif(self.state=="fill"):
             if(event.type==pygame.MOUSEBUTTONDOWN):
                 pos=event.pos
@@ -226,8 +244,8 @@ class drawingboard(updater):
                 # draw the line as the mouse is dragged
                 end_pos = self.screen_to_array(pygame.mouse.get_pos())
                 
-    
-      
+  
+
            
     def update(self,event):
         self.handle_event(event)
@@ -239,10 +257,10 @@ class drawingboard(updater):
         return int(nd)
     
     def pygame_rect(self,pos1,pos2):
-        pygame.draw.line(self.screen,(28, 185, 252),(pos1[0],pos2[1]),(pos2[0],pos2[1]),self.line_width)
-        pygame.draw.line(self.screen,(28, 185, 252),(pos1[0],pos1[1]),(pos2[0],pos1[1]),self.line_width)
-        pygame.draw.line(self.screen,(28, 185, 252),(pos1[0],pos1[1]),(pos1[0],pos2[1]),self.line_width)
-        pygame.draw.line(self.screen,(28, 185, 252),(pos2[0],pos1[1]),(pos2[0],pos2[1]),self.line_width)
+        pygame.draw.line(self.screen,(28, 185, 252),(pos1[0],pos2[1]),(pos2[0],pos2[1]),2)
+        pygame.draw.line(self.screen,(28, 185, 252),(pos1[0],pos1[1]),(pos2[0],pos1[1]),2)
+        pygame.draw.line(self.screen,(28, 185, 252),(pos1[0],pos1[1]),(pos1[0],pos2[1]),2)
+        pygame.draw.line(self.screen,(28, 185, 252),(pos2[0],pos1[1]),(pos2[0],pos2[1]),2)
         
         
     def draw(self):
@@ -253,8 +271,9 @@ class drawingboard(updater):
                     rect = pygame.Rect(self.positionX+j * self.pixel_size,self.positionY+ i * self.pixel_size, self.pixel_size, self.pixel_size)
                     pygame.draw.rect(self.screen, modify_color(self.line_color,self.map_depth(self.pixel_array[i, j])), rect)
                     
+        
         if(self.showgrid):
-            grid_density=min(50,self.axis_density)
+            grid_density=min(self.axis_density,50)
             grid_gap=self.size/grid_density
             for i in range(grid_density):
                     pygame.draw.line(self.screen, self.grid_color, (self.positionX+(i*grid_gap),self.positionY),(self.positionX+(i*grid_gap),self.positionY+self.size), 1)
@@ -264,7 +283,7 @@ class drawingboard(updater):
         if (self.state=="line" and self.is_dragging and (self.start_pos!=None)):
             mx,my=pygame.mouse.get_pos()
             draw_pos=self.array_to_screen(self.start_pos)
-            pygame.draw.line(self.screen, (28, 185, 252), draw_pos,(mx,my), self.line_width)
+            pygame.draw.line(self.screen, (28, 185, 252), draw_pos,(mx,my), 2)
 
         if (self.state=="rect" and self.is_dragging and (self.start_pos!=None)):
             mx,my=pygame.mouse.get_pos()
@@ -274,10 +293,16 @@ class drawingboard(updater):
         if (self.state=="circle" and self.is_dragging and (self.start_pos!=None)):
             mx,my=pygame.mouse.get_pos()
             draw_pos=self.array_to_screen(self.start_pos)
-            pygame.draw.circle(self.screen, (28, 185, 252), draw_pos, int(math.sqrt((mx-draw_pos[0])**2+(my-draw_pos[1])**2)), self.line_width)
+            pygame.draw.circle(self.screen, (28, 185, 252), draw_pos, int(math.sqrt((mx-draw_pos[0])**2+(my-draw_pos[1])**2)), 2)
         
         
-        
+    def undo_box(self):
+        if(len(self.undo.undo_stack)==0):return
+        last_stack=self.undo.undo_stack.pop(-1)
+        for i in last_stack:
+            print(i.pos,i.fromundo,i.toundo)
+            self.pixel_array[i.pos[0],i.pos[1]]=i.fromundo
+
 
         
 if __name__ =="__main__":

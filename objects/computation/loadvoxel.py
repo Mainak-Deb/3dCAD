@@ -15,7 +15,7 @@ def loadvoxel(path,resolution=20):
  
     binary_array = np.zeros((resolution,resolution,resolution), dtype=bool)
 
-    stltovoxel.convert_file(input, output, resolution)
+    stltovoxel.convert_file(input, output, resolution-3)
     
     image_names = os.listdir(folder_path)[0:resolution]
 

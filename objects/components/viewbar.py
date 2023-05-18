@@ -57,6 +57,7 @@ class viewbar(updater):
         self.grid_button.state=False
         
         self.select_text=textbox(screen,(580,100,120,30),color=(255, 238, 179),text_size=20,text_color=(158, 111, 33),rotation=0)
+        self.undo_button=button(screen,position=(710,102),size=(80,24),text="Undo",color=(52, 235, 198),instance=False,corner_radius=10,zoom=0.8,text_color=(1, 64, 37))
         
         self.button_obj={
             "pen":self.pen_button,
@@ -65,7 +66,7 @@ class viewbar(updater):
             "rect":self.rect_button,
             "circle":self.circle_button
         }
-        
+        self.undo_state=False;
         super().__init__()
         
     def update(self,event):
@@ -75,6 +76,8 @@ class viewbar(updater):
         self.slider2.update(event)
         
         self.grid_button.update(event)
+        self.undo_state=self.undo_button.update(event)
+        
         
         for i in self.button_obj.keys():
             currentState=self.button_obj[i].update(event)
@@ -94,9 +97,10 @@ class viewbar(updater):
         return self.operation
     
     def get_grid(self):
-        return self.grid_button
+        return self.grid_button.state
     
-
+    def get_undo(self):
+        return self.undo_state
         
 
     def draw(self):
@@ -117,6 +121,7 @@ class viewbar(updater):
         self.line_button.draw()
         self.rect_button.draw()
         self.circle_button.draw()
+        self.undo_button.draw()
         text=self.operation.upper()+" SELECTED "
         self.select_text.draw(text)
         pygame.draw.line(self.screen,(117, 52, 128),(self.pos[0]+400-1,self.pos[1]+10),(self.pos[0]+400-1,self.pos[1]+self.height-40),2)
